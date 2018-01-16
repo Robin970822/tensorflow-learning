@@ -1,0 +1,9 @@
+*.pyc
+.ipy*
+*~
+
+MNIST
+my_net
+log
+
+regressionRNN.py
