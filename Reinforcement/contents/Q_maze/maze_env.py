@@ -38,12 +38,7 @@ class Maze(tk.Tk, object):
         # create grids
         for c in range(0, MAZE_W * UNIT, UNIT):
             x0, y0, x1, y1 = c, 0, c, MAZE_H * UNIT
-            self.canvas.create_l#        # hell
-#        hell4_center = origin + np.array([UNIT, UNIT * 4])
-#        self.hell4 = self.canvas.create_rectangle(
-#            hell4_center[0] - SQUAR, hell4_center[1] - SQUAR,
-#            hell4_center[0] + SQUAR, hell4_center[1] + SQUAR,
-#            fill='black')ine(x0, y0, x1, y1)
+            self.canvas.create_line(x0, y0, x1, y1)
         for r in range(0, MAZE_H * UNIT, UNIT):
             x0, y0, x1, y1 = 0, r, MAZE_H * UNIT, r
             self.canvas.create_line(x0, y0, x1, y1)
@@ -160,8 +155,3 @@ if __name__ == '__main__':
     env = Maze()
     env.after(100, update)
     env.mainloop()
-        
-    
-    
-    
-    
