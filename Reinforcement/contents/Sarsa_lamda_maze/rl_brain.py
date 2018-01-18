@@ -113,4 +113,4 @@ class SarsaLambdaTable(RL):
         self.q_table += self.LR * error * self.eligibility_trace
 
         # decay eligibility trace after update
-        self.eligibility_trace *= self.GAMMA*self.lambda_
+        self.eligibility_trace *= self.GAMMA * self.lambda_

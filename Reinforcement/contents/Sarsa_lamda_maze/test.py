@@ -16,6 +16,7 @@ def update():
         # initial observation
         observation = env.reset()
         action = RL.choose_action(str(observation))
+        RL.eligibility_trace *= 0
         
         while True:
             # fresh env
