@@ -71,6 +71,8 @@ q_natural = train(natural_DQN)
 print 'Double DQN'
 q_double = train(double_DQN)
 
+env.close()
+
 plt.plot(np.array(q_natural), c='r', label='natural')
 plt.plot(np.array(q_double), c='b', label='double')
 plt.legend(loc='best')
@@ -78,4 +80,5 @@ plt.ylabel('Q eval')
 plt.xlabel('Training steps')
 plt.grid()
 plt.show()
+
 
