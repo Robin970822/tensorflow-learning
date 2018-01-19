@@ -1,6 +1,7 @@
 *.pyc
 .ipy*
 *~
+Reinforcement/contents/DQN_maze/logs
 
 MNIST
 my_net
