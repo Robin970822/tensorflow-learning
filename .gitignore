@@ -1,10 +1,12 @@
 *.pyc
-.ipy*
+*.ipynb
+*/logs
+*/log
 *~
-Reinforcement/contents/DQN_maze/logs
 
 MNIST
 my_net
 log
+logs
 
 regressionRNN.py
