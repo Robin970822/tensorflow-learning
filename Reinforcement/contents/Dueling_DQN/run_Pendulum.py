@@ -14,8 +14,8 @@ import tensorflow as tf
 env = gym.make('Pendulum-v0')
 env = env.unwrapped
 env.seed(1)
-MEMORY_SIZE = 3000
-ACTION_SPACE = 25
+MEMORY_SIZE = 5000
+ACTION_SPACE = 11
 
 sess = tf.Session()
 with tf.variable_scope('Natural_DQN'):
@@ -27,7 +27,7 @@ with tf.variable_scope('Natural_DQN'):
             dueling=False,
             sess=sess
             )
-with tf.variable_scope('Double_DQN'):
+with tf.variable_scope('Dueling_DQN'):
     double_DQN = DuelingDQN(
             n_actions=ACTION_SPACE,
             n_features=3,
@@ -60,7 +60,7 @@ def train(RL):
         if total_steps > MEMORY_SIZE:
             RL.learn()
             
-        if total_steps - MEMORY_SIZE > 20000:
+        if total_steps - MEMORY_SIZE > 15000:
             break
         
         observation = observation_
