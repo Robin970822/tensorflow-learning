@@ -8,7 +8,7 @@ Created on Tue Jan 16 21:10:42 2018
 
 from maze_env import Maze
 from rl_brain import QLearningTable
-#import time
+
 
 def update():
     for episode in range(100):
@@ -37,7 +37,6 @@ def update():
     print 'Game Over'
     print RL.q_table
     env.destroy()
-            
             
 
 if __name__ == "__main__":

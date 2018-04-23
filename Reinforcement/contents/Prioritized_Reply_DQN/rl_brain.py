@@ -12,6 +12,7 @@ import tensorflow as tf
 np.random.seed(1)
 tf.set_random_seed(1)
 
+
 class SumTree(object):
     
     data_pointer = 0
@@ -64,6 +65,7 @@ class SumTree(object):
     def total_p(self):
         return self.tree[0]
 
+
 class Memeory(object):
     
     epsilon = 0.01      # small amount to avoid zero priority
@@ -105,7 +107,8 @@ class Memeory(object):
         ps = np.power(clipped_errors, self.alpha)
         for ti, p in zip(tree_idx, ps):
             self.tree.update(ti, p)
-    
+
+
 # Prioritized Reply Deep Q Network off-policy
 class PrioritizedReplyDQN:
     def __init__(
@@ -248,7 +251,6 @@ class PrioritizedReplyDQN:
             self.sess.run(self.replace_target_op)
             print('\ntarget_params_replaced\n')
 
-        
         # sample batch memory from all memory
         if self.prioritized:
             tree_idx, batch_memory, ISWeights = self.memory.sample(self.batch_size)

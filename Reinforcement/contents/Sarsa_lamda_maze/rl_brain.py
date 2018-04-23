@@ -42,6 +42,7 @@ class RL(object):
                             index=self.q_table.columns,
                             name=state))
 
+
 class QLearningTable(RL):
     def __init__(self, actions, learning_rate=0.01, reward_decay=0.9, e_greedy=0.9):
         super(QLearningTable, self).__init__(actions, learning_rate, reward_decay, e_greedy)
@@ -54,6 +55,7 @@ class QLearningTable(RL):
         else:
             q_target = r
         self.q_table.loc[s, a] += self.LR * (q_target - q_predict)
+
 
 # on-policy
 class SarsaTable(RL):
@@ -68,6 +70,7 @@ class SarsaTable(RL):
         else:
             q_target = r
         self.q_table.loc[s, a] += self.LR * (q_target - q_predict)
+
 
 # backward eligibility traces
 class SarsaLambdaTable(RL):

@@ -39,6 +39,7 @@ with tf.variable_scope('Double_DQN'):
     
 sess.run(tf.global_variables_initializer())
 
+
 def train(RL):
     total_steps = 0
     observation = env.reset()
@@ -64,6 +65,7 @@ def train(RL):
         observation = observation_
         total_steps += 1
     return RL.q
+
 
 print 'Natural DQN'
 q_natural = train(natural_DQN)

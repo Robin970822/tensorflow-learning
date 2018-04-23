@@ -70,5 +70,3 @@ for i_episode in range(MAX_EPISODE):
             if running_reward > DISPLAY_THRESHOLD: RENDER = True
             print "Episode: %d | Reward: %d" %(i_episode, running_reward)
             break
-        
-        

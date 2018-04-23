@@ -39,6 +39,7 @@ with tf.variable_scope('Dueling_DQN'):
     
 sess.run(tf.global_variables_initializer())
 
+
 def train(RL):
     acc_r = [0]
     total_steps = 0
@@ -66,6 +67,7 @@ def train(RL):
         observation = observation_
         total_steps += 1
     return RL.cost_his, acc_r
+
 
 print 'Natural DQN'
 c_natural, r_natural = train(natural_DQN)

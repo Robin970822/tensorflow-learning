@@ -20,6 +20,7 @@ GAMMA = 0.9                    # discount factor
 MAX_EPISODES = 15               # maxmium episodes
 FRESH_TIME = 0.3                # fresh time for one move
 
+
 def build_q_table(n_states, actions):
     table = pd.DataFrame(
             np.zeros((n_states, len(actions))),     # q_table initial value
@@ -27,6 +28,7 @@ def build_q_table(n_states, actions):
             )
     # print table       # show table
     return table
+
 
 def choose_action(state, q_table):
     # This is how to choose an action
@@ -36,6 +38,7 @@ def choose_action(state, q_table):
     else:
         action_name = state_actions.idxmax()
     return action_name
+
 
 def get_env_feedback(S, A):
     # This is how agent will interact on the environment
@@ -53,7 +56,8 @@ def get_env_feedback(S, A):
         else:
             S_ = S - 1
     return S_, R
-    
+
+
 def update_env(S, episode, step_counter):
     # This is how environment be updated
     env_list = ['-']*(N_STATES-1) + ['T']   # '---------T' our environment
@@ -67,7 +71,8 @@ def update_env(S, episode, step_counter):
         interaction = ''.join(env_list)
         print '\r{}'.format(interaction)
     time.sleep(FRESH_TIME)
-        
+
+
 def rl():
     # main part of RL loop
     q_table = build_q_table(N_STATES, ACTIONS)
@@ -93,6 +98,7 @@ def rl():
             update_env(S, episode, step_counter+1)
             step_counter += 1
     return q_table
+
 
 if __name__ == "__main__":
     q_table = rl()

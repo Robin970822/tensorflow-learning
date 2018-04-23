@@ -102,4 +102,3 @@ class PolicyGradient:
         std = np.std(discounted_ep_rs)
         discounted_ep_rs = (discounted_ep_rs - mean)/std
         return discounted_ep_rs
-    

@@ -7,7 +7,7 @@ Created on Wed Jan 17 15:05:56 2018
 """
 from maze_env import Maze
 from rl_brain import SarsaLambdaTable
-#import time
+
 
 def update():
     for episode in range(100):
@@ -39,7 +39,6 @@ def update():
     print 'Game Over'
     print RL.q_table
     env.destroy()
-            
             
 
 if __name__ == "__main__":

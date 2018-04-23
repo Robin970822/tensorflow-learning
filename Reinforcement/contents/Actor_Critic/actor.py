@@ -8,6 +8,7 @@ Created on Wed Jan 24 16:01:01 2018
 import tensorflow as tf
 import numpy as np
 
+
 class Actor(object):
     def __init__(self, sess, n_actions, n_features, learning_rate=0.001):
         self.sess = sess

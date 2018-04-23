@@ -33,7 +33,6 @@ sess.run(tf.global_variables_initializer())
 
 
 def train(RL):
-    total_steps = 0
     steps = []
     episodes = []
     for i_episode in range(20):
@@ -65,6 +64,7 @@ def train(RL):
             observation = observation_
             total_steps += 1
     return np.vstack((episodes, steps))
+
 
 print 'Natural DQN'
 his_natural = train(RL_natural)

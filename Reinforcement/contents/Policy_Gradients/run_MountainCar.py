@@ -64,4 +64,4 @@ for i_episode in range(1000):
 plt.plot(vt)
 plt.xlabel('Episode Steps')
 plt.ylabel('Normalized State-Action Value')
-plt.show()  
+plt.show()

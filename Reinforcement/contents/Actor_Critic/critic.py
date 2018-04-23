@@ -10,6 +10,7 @@ import numpy as np
 
 GAMMA = 0.9;
 
+
 class Critic(object):
     
     def __init__(self, sess, n_features, learning_rate=0.01):

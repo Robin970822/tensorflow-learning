@@ -168,8 +168,7 @@ class DoubleDQN:
         batch_index = np.arange(self.batch_size, dtype=np.int32)
         eval_act_index = batch_memory[:, self.n_features].astype(int)
         reward = batch_memory[:, self.n_features + 1]
-        
-        
+
         if self.double_q:
             max_act4next = np.argmax(q_eval4next, axis=1)
             selected_q_next = q_next[batch_index, max_act4next]
