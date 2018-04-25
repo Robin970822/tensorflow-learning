@@ -9,6 +9,7 @@ Created on Tue Jan 23 20:29:58 2018
 import tensorflow as tf
 import numpy as np
 
+
 class PolicyGradient:
     
     def __init__(self, n_actions, n_features, learning_rate=0.01, reward_decay=0.95, output_graph=False):

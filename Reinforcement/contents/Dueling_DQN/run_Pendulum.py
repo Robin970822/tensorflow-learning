@@ -95,5 +95,3 @@ plt.grid()
 plt.show()
 
 env.close()
-
-

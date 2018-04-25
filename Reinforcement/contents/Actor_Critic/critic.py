@@ -8,7 +8,7 @@ Created on Wed Jan 24 16:04:44 2018
 import tensorflow as tf
 import numpy as np
 
-GAMMA = 0.9;
+GAMMA = 0.9
 
 
 class Critic(object):

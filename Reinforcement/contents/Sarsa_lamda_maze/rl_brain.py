@@ -9,6 +9,7 @@ Created on Wed Jan 17 15:05:45 2018
 import numpy as np
 import pandas as pd
 
+
 class RL(object):
     def __init__(self, actions, learning_rate=0.01, reward_decay=0.9, e_greedy=0.9):
         self.actions = actions

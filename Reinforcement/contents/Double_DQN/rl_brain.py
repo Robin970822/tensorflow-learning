@@ -60,7 +60,6 @@ class DoubleDQN:
         else:
             self.sess = sess
 
-
         if output_graph:
             # $ tensorboard --logdir=logs
             # tf.train.SummaryWriter soon be deprecated, use following

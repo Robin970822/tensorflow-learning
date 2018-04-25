@@ -61,6 +61,7 @@ def train(RL):
             total_steps += 1
     return np.vstack((episodes, steps))
 
+
 print 'Natural DQN'
 his_natural = train(RL_natural)
 

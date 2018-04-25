@@ -155,4 +155,3 @@ if __name__ == '__main__':
     env = Maze()
     env.after(100, update)
     env.mainloop()
-

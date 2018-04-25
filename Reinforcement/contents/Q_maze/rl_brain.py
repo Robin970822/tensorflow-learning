@@ -9,6 +9,7 @@ Created on Tue Jan 16 20:48:48 2018
 import numpy as np
 import pandas as pd
 
+
 class QLearningTable:
     def __init__(self, actions, learning_rate=0.01, reward_decay=0.9, e_greedy=0.9):
         self.actions = actions
