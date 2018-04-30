@@ -8,7 +8,7 @@ LR_C = 0.001  # learning rate for critic
 GAMMA = 0.9  # reward discount
 TAU = 0.01  # soft replacement
 MEMORY_CAPACITY = 30000
-BATCH_SIZE = 32
+BATCH_SIZE = 50
 
 
 class DDPG(object):
@@ -134,8 +134,8 @@ class DDPG(object):
 
     def save(self):
         saver = tf.train.Saver()
-        saver.save(self.sess, './params', write_meta_graph=False)
+        saver.save(self.sess, './model/params', write_meta_graph=False)
 
     def restore(self):
         saver = tf.train.Saver()
-        saver.restore(self.sess, './params')
+        saver.restore(self.sess, './model/params')

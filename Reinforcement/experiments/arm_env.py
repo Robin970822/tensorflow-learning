@@ -3,14 +3,14 @@ import pyglet
 import numpy as np
 
 
-class Viewer(pyglet.window.Window):
+class ArmViewer(pyglet.window.Window):
     bar_thc = 5  # 手臂的厚度
 
     def __init__(self, arm_info, goal):
         # 创建窗口的继承
         # vsync 如果是True，按屏幕频率刷新，反之不按那个频率
-        super(Viewer, self).__init__(width=400, height=400,
-                                     resizable=False, caption='Arm', vsync=False)
+        super(ArmViewer, self).__init__(width=400, height=400,
+                                        resizable=False, caption='Arm', vsync=False)
         # 窗口背景颜色
         pyglet.gl.glClearColor(1, 1, 1, 1)
         self.arm_info = arm_info
@@ -129,7 +129,7 @@ class ArmEnv(object):
         a1xy = np.array([200., 200.])
         a1xy_ = np.array([np.cos(a1r), np.sin(a1r)]) * a1l + a1xy
         finger = np.array([np.cos(a1r + a2r), np.sin(a1r + a2r)]) * a2l + a1xy_
-
+        # normalize features
         dist1 = [(self.goal['x'] - a1xy_[0]) / 400, (self.goal['y'] - a1xy_[1]) / 400]
         dist2 = [(self.goal['x'] - finger[0]) / 400, (self.goal['y'] - finger[1]) / 400]
         r = -np.sqrt(dist2[0]**2 + dist2[1]**2)
@@ -158,6 +158,7 @@ class ArmEnv(object):
         a1xy = np.array([200., 200.])
         a1xy_ = np.array([np.cos(a1r), np.sin(a1r)]) * a1l + a1xy
         finger = np.array([np.cos(a1r + a2r), np.sin(a1r + a2r)]) * a2l + a1xy_
+        # normalize features
         dist1 = [(self.goal['x'] - a1xy_[0]) / 400, (self.goal['y'] - a1xy_[1]) / 400]
         dist2 = [(self.goal['x'] - finger[0]) / 400, (self.goal['y'] - finger[1]) / 400]
         s = np.concatenate((a1xy_/200, finger/200, dist1 + dist2, [1. if self.on_goal else 0.]))
@@ -165,10 +166,11 @@ class ArmEnv(object):
 
     def render(self):
         if self.viewer is None:
-            self.viewer = Viewer(self.arm_info, self.goal)
+            self.viewer = ArmViewer(self.arm_info, self.goal)
         self.viewer.render()
 
-    def sample_action(self):
+    @staticmethod
+    def sample_action():
         return np.random.rand(2) - 0.5
 
 
