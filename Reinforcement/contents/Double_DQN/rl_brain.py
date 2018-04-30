@@ -27,7 +27,7 @@ class DoubleDQN:
             batch_size=32,
             e_greedy_increment=None,
             output_graph=False,
-            double_q = True,
+            double_q=True,
             sess=None
     ):
         self.n_actions = n_actions
@@ -52,7 +52,7 @@ class DoubleDQN:
         t_params = tf.get_collection('target_net_params')
         e_params = tf.get_collection('eval_net_params')
         self.replace_target_op = [tf.assign(t, e) for t, e in zip(t_params, e_params)]
-        
+
         self.double_q = double_q
         if sess is None:
             self.sess = tf.Session()
@@ -66,7 +66,7 @@ class DoubleDQN:
             tf.summary.FileWriter("logs/", self.sess.graph)
 
         self.cost_his = []
-        
+
     def _build_net(self):
         # ------------------ build evaluate_net ------------------
         self.s = tf.placeholder(tf.float32, [None, self.n_features], name='s')  # input
@@ -95,7 +95,7 @@ class DoubleDQN:
             self._train_op = tf.train.RMSPropOptimizer(self.lr).minimize(self.loss)
 
         # ------------------ build target_net ------------------
-        self.s_ = tf.placeholder(tf.float32, [None, self.n_features], name='s_')    # input
+        self.s_ = tf.placeholder(tf.float32, [None, self.n_features], name='s_')  # input
         with tf.variable_scope('target_net'):
             # c_names(collections_names) are the collections to store variables
             c_names = ['target_net_params', tf.GraphKeys.GLOBAL_VARIABLES]
@@ -127,7 +127,7 @@ class DoubleDQN:
     def choose_action(self, observation):
         # to have batch dimension when feed into tf placeholder
         observation = observation[np.newaxis, :]
-        
+
         if np.random.uniform() < self.epsilon:
             # forward feed the observation and get q value for every actions
             actions_value = self.sess.run(self.q_eval, feed_dict={self.s: observation})
@@ -173,7 +173,7 @@ class DoubleDQN:
             selected_q_next = q_next[batch_index, max_act4next]
         else:
             selected_q_next = np.max(q_next, axis=1)
-        
+
         q_target[batch_index, eval_act_index] = reward + self.gamma * selected_q_next
 
         # train eval network

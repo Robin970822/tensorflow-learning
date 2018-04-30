@@ -67,6 +67,10 @@ class ArmViewer(pyglet.window.Window):
         self.clear()
         self.batch.draw()
 
+    def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
+        self.goal_info['x'] = x
+        self.goal_info['y'] = y
+
     def _update_arm(self):
         # update goal
         self.goal.vertices = (
@@ -77,10 +81,10 @@ class ArmViewer(pyglet.window.Window):
         )
 
         # update arm
-        (a1l, a2l) = self.arm_info['l']     # arm length
-        (a1r, a2r) = self.arm_info['r']     # angle
-        a1xy = self.center_coord            # a1 start (x0, y0)
-        a1xy_ = np.array([np.cos(a1r), np.sin(a1r)]) * a1l + a1xy   # a1 end and a2 start (x1, y1)
+        (a1l, a2l) = self.arm_info['l']  # arm length
+        (a1r, a2r) = self.arm_info['r']  # angle
+        a1xy = self.center_coord  # a1 start (x0, y0)
+        a1xy_ = np.array([np.cos(a1r), np.sin(a1r)]) * a1l + a1xy  # a1 end and a2 start (x1, y1)
         a2xy_ = np.array([np.cos(a1r + a2r), np.sin(a1r + a2r)]) * a2l + a1xy_  # a2 end (x2, y2)
 
         a1tr, a2tr = np.pi / 2 - self.arm_info['r'][0], np.pi / 2 - self.arm_info['r'].sum()
@@ -96,10 +100,6 @@ class ArmViewer(pyglet.window.Window):
 
         self.arm1.vertices = np.concatenate((xy01, xy02, xy11, xy12))
         self.arm2.vertices = np.concatenate((xy11_, xy12_, xy21, xy22))
-
-    def on_mouse_motion(self, x, y, dx, dy):
-        self.goal_info['x'] = x
-        self.goal_info['y'] = y
 
 
 class ArmEnv(object):
@@ -132,7 +132,7 @@ class ArmEnv(object):
         # normalize features
         dist1 = [(self.goal['x'] - a1xy_[0]) / 400, (self.goal['y'] - a1xy_[1]) / 400]
         dist2 = [(self.goal['x'] - finger[0]) / 400, (self.goal['y'] - finger[1]) / 400]
-        r = -np.sqrt(dist2[0]**2 + dist2[1]**2)
+        r = -np.sqrt(dist2[0] ** 2 + dist2[1] ** 2)
 
         # done and reward
         if self.goal['x'] - self.goal['l'] / 2 < finger[0] < self.goal['x'] + self.goal['l'] / 2:
@@ -145,7 +145,7 @@ class ArmEnv(object):
             self.on_goal = 0
 
         # state
-        s = np.concatenate((a1xy_/200, finger/200, dist1 + dist2, [1. if self.on_goal else 0.]))
+        s = np.concatenate((a1xy_ / 200, finger / 200, dist1 + dist2, [1. if self.on_goal else 0.]))
         return s, r, done
 
     def reset(self):
@@ -161,7 +161,7 @@ class ArmEnv(object):
         # normalize features
         dist1 = [(self.goal['x'] - a1xy_[0]) / 400, (self.goal['y'] - a1xy_[1]) / 400]
         dist2 = [(self.goal['x'] - finger[0]) / 400, (self.goal['y'] - finger[1]) / 400]
-        s = np.concatenate((a1xy_/200, finger/200, dist1 + dist2, [1. if self.on_goal else 0.]))
+        s = np.concatenate((a1xy_ / 200, finger / 200, dist1 + dist2, [1. if self.on_goal else 0.]))
         return s
 
     def render(self):

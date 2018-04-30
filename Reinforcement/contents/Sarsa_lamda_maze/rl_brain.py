@@ -17,7 +17,7 @@ class RL(object):
         self.GAMMA = reward_decay
         self.epsilon = e_greedy
         self.q_table = pd.DataFrame(columns=self.actions, dtype=np.float64)
-    
+
     def choose_action(self, observation):
         self.check_state_exist(observation)
         # action selection
@@ -30,24 +30,24 @@ class RL(object):
             # choose random action
             action = np.random.choice(self.actions)
         return action
-    
+
     def learn(self, *agrs):
         pass
-    
+
     def check_state_exist(self, state):
         if state not in self.q_table.index:
             # append new state to q table
             self.q_table = self.q_table.append(
-                    pd.Series(
-                            [0]*len(self.actions),
-                            index=self.q_table.columns,
-                            name=state))
+                pd.Series(
+                    [0] * len(self.actions),
+                    index=self.q_table.columns,
+                    name=state))
 
 
 class QLearningTable(RL):
     def __init__(self, actions, learning_rate=0.01, reward_decay=0.9, e_greedy=0.9):
         super(QLearningTable, self).__init__(actions, learning_rate, reward_decay, e_greedy)
-        
+
     def learn(self, s, a, r, s_):
         self.check_state_exist(s_)
         q_predict = self.q_table.loc[s, a]
@@ -62,7 +62,7 @@ class QLearningTable(RL):
 class SarsaTable(RL):
     def __init__(self, actions, learning_rate=0.01, reward_decay=0.9, e_greedy=0.9):
         super(SarsaTable, self).__init__(actions, learning_rate, reward_decay, e_greedy)
-        
+
     def learn(self, s, a, r, s_, a_):
         self.check_state_exist(s_)
         q_predict = self.q_table.loc[s, a]
@@ -86,10 +86,10 @@ class SarsaLambdaTable(RL):
         if state not in self.q_table.index:
             # append new state to q table
             to_be_append = pd.Series(
-                    [0] * len(self.actions),
-                    index=self.q_table.columns,
-                    name=state,
-                )
+                [0] * len(self.actions),
+                index=self.q_table.columns,
+                name=state,
+            )
             self.q_table = self.q_table.append(to_be_append)
 
             # also update eligibility trace

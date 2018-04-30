@@ -8,5 +8,4 @@ MNIST
 my_net
 log
 logs
-
-regressionRNN.py
+model

@@ -20,23 +20,23 @@ ACTION_SPACE = 11
 sess = tf.Session()
 with tf.variable_scope('Natural_DQN'):
     natural_DQN = DuelingDQN(
-            n_actions=ACTION_SPACE,
-            n_features=3,
-            memory_size=MEMORY_SIZE,
-            e_greedy_increment=0.001,
-            dueling=False,
-            sess=sess
-            )
+        n_actions=ACTION_SPACE,
+        n_features=3,
+        memory_size=MEMORY_SIZE,
+        e_greedy_increment=0.001,
+        dueling=False,
+        sess=sess
+    )
 with tf.variable_scope('Dueling_DQN'):
     double_DQN = DuelingDQN(
-            n_actions=ACTION_SPACE,
-            n_features=3,
-            memory_size=MEMORY_SIZE,
-            e_greedy_increment=0.001,
-            dueling=True,
-            sess=sess,
-            output_graph=True)
-    
+        n_actions=ACTION_SPACE,
+        n_features=3,
+        memory_size=MEMORY_SIZE,
+        e_greedy_increment=0.001,
+        dueling=True,
+        sess=sess,
+        output_graph=True)
+
 sess.run(tf.global_variables_initializer())
 
 
@@ -47,23 +47,23 @@ def train(RL):
     while True:
         env.render()
         action = RL.choose_action(observation)
-        
+
         # convert to [-2,2] float actions
-        f_action = (action-(ACTION_SPACE-1)/2)/((ACTION_SPACE-1)/4)
+        f_action = (action - (ACTION_SPACE - 1) / 2) / ((ACTION_SPACE - 1) / 4)
         observation_, reward, done, info = env.step(np.array([f_action]))
-        
+
         # normalize to (-1, 0)
         reward /= 10
         acc_r.append(reward + acc_r[-1])
-        
+
         RL.store_transition(observation, action, reward, observation_)
-        
+
         if total_steps > MEMORY_SIZE:
             RL.learn()
-            
+
         if total_steps - MEMORY_SIZE > 15000:
             break
-        
+
         observation = observation_
         total_steps += 1
     return RL.cost_his, acc_r
@@ -74,7 +74,6 @@ c_natural, r_natural = train(natural_DQN)
 
 print 'Dueling DQN'
 c_dueling, r_dueling = train(double_DQN)
-
 
 plt.figure(1)
 plt.plot(np.array(c_natural), c='r', label='natural')

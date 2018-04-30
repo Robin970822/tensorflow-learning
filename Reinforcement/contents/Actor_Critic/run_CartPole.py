@@ -27,8 +27,8 @@ env = env.unwrapped
 sess = tf.Session()
 
 actor = Actor(sess,
-              n_actions=env.action_space.n, 
-              n_features=env.observation_space.shape[0], 
+              n_actions=env.action_space.n,
+              n_features=env.observation_space.shape[0],
               learning_rate=0.001)
 
 critic = Critic(sess,
@@ -45,28 +45,28 @@ for i_episode in range(MAX_EPISODE):
     track_reward = []
     while True:
         if RENDER: env.render()
-        
+
         action = actor.choose_action(observation)
-        
+
         observation_, reward, done, info = env.step(action)
-        
+
         if done: reward = -20
-        
+
         track_reward.append(reward)
-        
+
         td_error = critic.learn(observation, reward, observation_)
         actor.learn(observation, action, td_error)
-        
+
         observation = observation_
         t += 1
-        
+
         if done or t > MAX_EP_STEP:
             ep_rs_sum = sum(track_reward)
-            
+
             if 'running_reward' not in globals():
                 running_reward = ep_rs_sum
             else:
-                running_reward = running_reward * 0.95 + ep_rs_sum *0.05
+                running_reward = running_reward * 0.95 + ep_rs_sum * 0.05
             if running_reward > DISPLAY_THRESHOLD: RENDER = True
-            print "Episode: %d | Reward: %d" %(i_episode, running_reward)
+            print "Episode: %d | Reward: %d" % (i_episode, running_reward)
             break

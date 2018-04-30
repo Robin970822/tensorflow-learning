@@ -36,7 +36,7 @@ def train(RL):
     steps = []
     episodes = []
     for i_episode in range(20):
-        print "Episode: %d" %(i_episode)
+        print "Episode: %d" % (i_episode)
         total_steps = 0
         observation = env.reset()
         while True:
@@ -45,9 +45,9 @@ def train(RL):
             action = RL.choose_action(observation)
 
             # convert to [-2,2] float actions
-            f_action = (action-(ACTION_SPACE-1)/2)/((ACTION_SPACE-1)/4)
+            f_action = (action - (ACTION_SPACE - 1) / 2) / ((ACTION_SPACE - 1) / 4)
             observation_, reward, done, info = env.step(np.array([f_action]))
-            
+
             # normalize to (-1, 0)
             reward /= 10
 
@@ -60,7 +60,7 @@ def train(RL):
                 steps.append(total_steps)
                 episodes.append(i_episode)
                 break
-            
+
             observation = observation_
             total_steps += 1
     return np.vstack((episodes, steps))

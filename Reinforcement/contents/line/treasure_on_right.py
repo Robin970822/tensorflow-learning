@@ -10,22 +10,22 @@ import numpy as np
 import pandas as pd
 import time
 
-np.random.seed(2)   # reproducible
+np.random.seed(2)  # reproducible
 
-N_STATES = 6    # the length of the 1 dimense world
-ACTIONS = ['left', 'right']     # available actions
-EPSILON = 0.9                   # greedy police
-ALPHA = 0.1                     # learining rate
-GAMMA = 0.9                    # discount factor
-MAX_EPISODES = 15               # maxmium episodes
-FRESH_TIME = 0.3                # fresh time for one move
+N_STATES = 6  # the length of the 1 dimense world
+ACTIONS = ['left', 'right']  # available actions
+EPSILON = 0.9  # greedy police
+ALPHA = 0.1  # learining rate
+GAMMA = 0.9  # discount factor
+MAX_EPISODES = 15  # maxmium episodes
+FRESH_TIME = 0.3  # fresh time for one move
 
 
 def build_q_table(n_states, actions):
     table = pd.DataFrame(
-            np.zeros((n_states, len(actions))),     # q_table initial value
-            columns=actions,                        # action's name
-            )
+        np.zeros((n_states, len(actions))),  # q_table initial value
+        columns=actions,  # action's name
+    )
     # print table       # show table
     return table
 
@@ -43,7 +43,7 @@ def choose_action(state, q_table):
 def get_env_feedback(S, A):
     # This is how agent will interact on the environment
     if A == 'right':
-        if S == N_STATES - 2:   # terminate
+        if S == N_STATES - 2:  # terminate
             S_ = 'terminal'
             R = 20
         else:
@@ -60,9 +60,9 @@ def get_env_feedback(S, A):
 
 def update_env(S, episode, step_counter):
     # This is how environment be updated
-    env_list = ['-']*(N_STATES-1) + ['T']   # '---------T' our environment
+    env_list = ['-'] * (N_STATES - 1) + ['T']  # '---------T' our environment
     if S == 'terminal':
-        interaction = 'Episode %s: total_steps = %s' % (episode+1, step_counter)
+        interaction = 'Episode %s: total_steps = %s' % (episode + 1, step_counter)
         print '\r{}'.format(interaction)
         time.sleep(2)
         print '\r                                '
@@ -87,15 +87,15 @@ def rl():
             S_, R = get_env_feedback(S, A)  # take action & get next state and reward
             q_predict = q_table.loc[S, A]
             if S_ != 'terminal':
-                q_target = R + GAMMA * q_table.iloc[S_, :].max()   # next state is not terminal
+                q_target = R + GAMMA * q_table.iloc[S_, :].max()  # next state is not terminal
             else:
-                q_target = R     # next state is terminal
-                is_terminated = True    # terminate this episode
+                q_target = R  # next state is terminal
+                is_terminated = True  # terminate this episode
 
             q_table.loc[S, A] += ALPHA * (q_target - q_predict)  # update
             S = S_  # move to next state
 
-            update_env(S, episode, step_counter+1)
+            update_env(S, episode, step_counter + 1)
             step_counter += 1
     return q_table
 

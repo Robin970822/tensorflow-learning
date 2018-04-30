@@ -12,7 +12,7 @@ from rl_brain import DeepQNetwork
 def run_maze():
     step = 0
     for episode in range(300):
-        print 'Episode:%d' %episode
+        print 'Episode:%d' % episode
         # initial observation
         observation = env.reset()
 
@@ -41,7 +41,7 @@ def run_maze():
 
     # end of game
     print('game over')
-    
+
     env.destroy()
 
 

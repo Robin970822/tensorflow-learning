@@ -6,7 +6,7 @@ from rl import DDPG
 # 设置全局变量
 MAX_EPISODES = 500
 MAX_EP_STEPS = 200
-ON_TRAIN = True
+ON_TRAIN = False
 
 
 def train():
@@ -15,8 +15,8 @@ def train():
         s = env.reset()
         ep_r = 0.
         for j in range(MAX_EP_STEPS):
-            if i >= 300:
-                env. render()
+            if i >= 500:
+                env.render()
             a = rl.choose_action(s)
             s_, r, done = env.step(a)
             rl.store_transition(s, a, r, s_)
@@ -27,8 +27,8 @@ def train():
                 rl.learn()
 
             s = s_
-            if done or j == MAX_EP_STEPS-1:
-                print 'Episode: %i | %s |Reward: %.1f | Step: %i' % (i, '---' if not done else 'done', ep_r, j+1)
+            if done or j == MAX_EP_STEPS - 1:
+                print 'Episode: %i | %s |Reward: %.1f | Step: %i' % (i, '---' if not done else 'done', ep_r, j + 1)
                 break
     rl.save()
 
@@ -36,7 +36,6 @@ def train():
 def eval():
     rl.restore()
     env.reset()
-    env.viewer.set_vsync(True)
     s = env.reset()
     while True:
         env.render()
@@ -60,4 +59,3 @@ if __name__ == '__main__':
         train()
     else:
         eval()
-

@@ -64,13 +64,13 @@ class DDPG(object):
 
     def _build_graph(self):
         with tf.variable_scope('Actor'):
-            self.a = self.generator(self.S, scope='eval', trainable=True)
-            a_ = self.generator(self.S_, scope='target', trainable=False)
+            self.a = self.actor(self.S, scope='eval', trainable=True)
+            a_ = self.actor(self.S_, scope='target', trainable=False)
         with tf.variable_scope('Critic'):
             # assign self.a = a in memory when calculating q for td_error
             # otherwise the self.a is from Actor when updating Actor
-            q = self.discriminator(self.S, self.a, scope='eval', trainable=True)
-            q_ = self.discriminator(self.S_, a_, scope='target', trainable=False)
+            q = self.critic(self.S, self.a, scope='eval', trainable=True)
+            q_ = self.critic(self.S_, a_, scope='target', trainable=False)
 
         # networks parameters
         self.ae_params = tf.get_collection(tf.GraphKeys.GLOBAL_VARIABLES,
@@ -98,15 +98,9 @@ class DDPG(object):
 
         self.sess.run(tf.global_variables_initializer())
 
-    def generator(self, s, scope, trainable):
-        '''
-        Generator
+        tf.summary.FileWriter("logs/", self.sess.graph)
 
-        :param s:
-        :param scope:
-        :param trainable:
-        :return:
-        '''
+    def actor(self, s, scope, trainable):
         with tf.variable_scope(scope):
             l1 = tf.layers.dense(s, 300, activation=tf.nn.relu,
                                  name='l1', trainable=trainable)
@@ -114,16 +108,7 @@ class DDPG(object):
                                 name='a', trainable=trainable)
             return tf.multiply(a, self.a_bound, name='scaled_a')
 
-    def discriminator(self, s, a, scope, trainable):
-        '''
-        Discriminator
-
-        :param s:
-        :param a:
-        :param scope:
-        :param trainable:
-        :return:
-        '''
+    def critic(self, s, a, scope, trainable):
         with tf.variable_scope(scope):
             w1_s = tf.get_variable('w1_s', [self.s_dim, 300], trainable=trainable)
             w1_a = tf.get_variable('w1_a', [self.a_dim, 300], trainable=trainable)
@@ -134,8 +119,8 @@ class DDPG(object):
 
     def save(self):
         saver = tf.train.Saver()
-        saver.save(self.sess, './model/params', write_meta_graph=False)
+        saver.save(self.sess, './model/ddpg.ckpt')
 
     def restore(self):
         saver = tf.train.Saver()
-        saver.restore(self.sess, './model/params')
+        saver.restore(self.sess, './model/ddpg.ckpt')

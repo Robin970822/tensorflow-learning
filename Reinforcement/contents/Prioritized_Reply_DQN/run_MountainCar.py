@@ -36,7 +36,7 @@ def train(RL):
     steps = []
     episodes = []
     for i_episode in range(20):
-        print "Episode: %d" %(i_episode)
+        print "Episode: %d" % (i_episode)
         observation = env.reset()
         while True:
             env.render()
@@ -51,7 +51,7 @@ def train(RL):
 
             if total_steps > MEMORY_SIZE:
                 RL.learn()
-            
+
             if done:
                 steps.append(total_steps)
                 episodes.append(i_episode)

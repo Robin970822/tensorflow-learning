@@ -10,7 +10,6 @@ import numpy as np
 import tensorflow as tf
 import matplotlib.pyplot as plt
 
-
 ACTIVATION = tf.nn.relu
 N_LAYERS = 7
 N_HIDDEN_UNITS = 30
@@ -26,7 +25,7 @@ def plot_his(inputs, inputs_norm):
     # plot histogram for the inputs of every layer
     for j, all_inputs in enumerate([inputs, inputs_norm]):
         for i, input in enumerate(all_inputs):
-            plt.subplot(2, len(all_inputs), j*len(all_inputs)+(i+1))
+            plt.subplot(2, len(all_inputs), j * len(all_inputs) + (i + 1))
             plt.cla()
             if i == 0:
                 the_range = (-7, 10)
@@ -60,8 +59,8 @@ def built_net(xs, ys, norm):
             # Batch Normalize
             fc_mean, fc_var = tf.nn.moments(
                 Wx_plus_b,
-                axes=[0],   # the dimension you wanna normalize, here [0] for batch
-                            # for image, you wanna do [0, 1, 2] for [batch, height, width] but not channel
+                axes=[0],  # the dimension you wanna normalize, here [0] for batch
+                # for image, you wanna do [0, 1, 2] for [batch, height, width] but not channel
             )
             scale = tf.Variable(tf.ones([out_size]))
             shift = tf.Variable(tf.zeros([out_size]))
@@ -69,10 +68,12 @@ def built_net(xs, ys, norm):
 
             # apply moving average for mean and var when train on batch
             ema = tf.train.ExponentialMovingAverage(decay=0.5)
+
             def mean_var_with_update():
                 ema_apply_op = ema.apply([fc_mean, fc_var])
                 with tf.control_dependencies([ema_apply_op]):
                     return tf.identity(fc_mean), tf.identity(fc_var)
+
             mean, var = mean_var_with_update()
 
             Wx_plus_b = tf.nn.batch_normalization(Wx_plus_b, mean, var, shift, scale, epsilon)
@@ -101,10 +102,12 @@ def built_net(xs, ys, norm):
         epsilon = 0.001
         # apply moving average for mean and var when train on batch
         ema = tf.train.ExponentialMovingAverage(decay=0.5)
+
         def mean_var_with_update():
             ema_apply_op = ema.apply([fc_mean, fc_var])
             with tf.control_dependencies([ema_apply_op]):
                 return tf.identity(fc_mean), tf.identity(fc_var)
+
         mean, var = mean_var_with_update()
         xs = tf.nn.batch_normalization(xs, mean, var, shift, scale, epsilon)
 
@@ -117,13 +120,13 @@ def built_net(xs, ys, norm):
         in_size = layers_inputs[l_n].get_shape()[1].value
 
         output = add_layer(
-            layer_input,    # input
-            in_size,        # input size
-            N_HIDDEN_UNITS, # output size
-            ACTIVATION,     # activation function
-            norm,           # normalize before activation
+            layer_input,  # input
+            in_size,  # input size
+            N_HIDDEN_UNITS,  # output size
+            ACTIVATION,  # activation function
+            norm,  # normalize before activation
         )
-        layers_inputs.append(output)    # add output for next run
+        layers_inputs.append(output)  # add output for next run
 
     # build output layer
     prediction = add_layer(layers_inputs[-1], 30, 1, activation_function=None)
@@ -131,6 +134,7 @@ def built_net(xs, ys, norm):
     cost = tf.reduce_mean(tf.reduce_sum(tf.square(ys - prediction), reduction_indices=[1]))
     train_op = tf.train.GradientDescentOptimizer(0.001).minimize(cost)
     return [train_op, cost, layers_inputs]
+
 
 # make up data
 fix_seed(1)
@@ -146,8 +150,8 @@ plt.show()
 xs = tf.placeholder(tf.float32, [None, 1])  # [num_samples, num_features]
 ys = tf.placeholder(tf.float32, [None, 1])
 
-train_op, cost, layers_inputs = built_net(xs, ys, norm=False)   # without BN
-train_op_norm, cost_norm, layers_inputs_norm = built_net(xs, ys, norm=True) # with BN
+train_op, cost, layers_inputs = built_net(xs, ys, norm=False)  # without BN
+train_op_norm, cost_norm, layers_inputs_norm = built_net(xs, ys, norm=True)  # with BN
 
 sess = tf.Session()
 if int((tf.__version__).split('.')[1]) < 12 and int((tf.__version__).split('.')[0]) < 1:
@@ -170,7 +174,7 @@ for i in range(250):
         plot_his(all_inputs, all_inputs_norm)
 
     # train on batch
-    sess.run([train_op, train_op_norm], feed_dict={xs: x_data[i*10:i*10+10], ys: y_data[i*10:i*10+10]})
+    sess.run([train_op, train_op_norm], feed_dict={xs: x_data[i * 10:i * 10 + 10], ys: y_data[i * 10:i * 10 + 10]})
 
     if i % record_step == 0:
         # record cost
@@ -179,7 +183,7 @@ for i in range(250):
 
 plt.ioff()
 plt.figure()
-plt.plot(np.arange(len(cost_his))*record_step, np.array(cost_his), label='no BN')     # no norm
-plt.plot(np.arange(len(cost_his))*record_step, np.array(cost_his_norm), label='BN')   # norm
+plt.plot(np.arange(len(cost_his)) * record_step, np.array(cost_his), label='no BN')  # no norm
+plt.plot(np.arange(len(cost_his)) * record_step, np.array(cost_his_norm), label='BN')  # norm
 plt.legend()
 plt.show()

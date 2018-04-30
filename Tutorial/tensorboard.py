@@ -13,9 +13,9 @@ tf.set_random_seed(1)
 np.random.seed(1)
 
 # fake data
-x = np.linspace(-1, 1, 100)[:, np.newaxis]          # shape (100, 1)
+x = np.linspace(-1, 1, 100)[:, np.newaxis]  # shape (100, 1)
 noise = np.random.normal(0, 0.1, size=x.shape)
-y = np.power(x, 2) + noise                          # shape (100, 1) + some noise
+y = np.power(x, 2) + noise  # shape (100, 1) + some noise
 
 with tf.variable_scope('Inputs'):
     tf_x = tf.placeholder(tf.float32, x.shape, name='x')
@@ -31,13 +31,13 @@ with tf.variable_scope('Net'):
 
 loss = tf.losses.mean_squared_error(tf_y, output, scope='loss')
 train_op = tf.train.GradientDescentOptimizer(learning_rate=0.5).minimize(loss)
-tf.summary.scalar('loss', loss)     # add loss to scalar summary
+tf.summary.scalar('loss', loss)  # add loss to scalar summary
 
 sess = tf.Session()
 sess.run(tf.global_variables_initializer())
 
-writer = tf.summary.FileWriter('./log', sess.graph)     # write to file
-merge_op = tf.summary.merge_all()                       # operation to merge all summary
+writer = tf.summary.FileWriter('./log', sess.graph)  # write to file
+merge_op = tf.summary.merge_all()  # operation to merge all summary
 
 for step in range(100):
     # train and net output

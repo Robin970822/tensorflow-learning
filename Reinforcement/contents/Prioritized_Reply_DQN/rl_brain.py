@@ -14,9 +14,8 @@ tf.set_random_seed(1)
 
 
 class SumTree(object):
-    
     data_pointer = 0
-    
+
     def __init__(self, capacity):
         self.capacity = capacity
         # [----parent nodes----][----leaves to recode priority----]
@@ -25,16 +24,16 @@ class SumTree(object):
         # [----data frame----]
         #   size: capacity
         self.data = np.zeros(capacity, dtype=object)
-    
+
     def add(self, p, data):
         tree_idx = self.data_pointer + self.capacity - 1
-        self.data[self.data_pointer] = data     # update data frame
-        self.update(tree_idx, p)                # update tree frame
-        
+        self.data[self.data_pointer] = data  # update data frame
+        self.update(tree_idx, p)  # update tree frame
+
         self.data_pointer += 1
         if self.data_pointer >= self.capacity:
             self.data_pointer = 0
-    
+
     def update(self, tree_idx, p):
         change = p - self.tree[tree_idx]
         self.tree[tree_idx] = p
@@ -43,13 +42,13 @@ class SumTree(object):
         while tree_idx != 0:
             tree_idx = (tree_idx - 1) // 2
             self.tree[tree_idx] += change
-        
+
     def get_leaf(self, v):
         parent_idx = 0
         while True:
             cl_idx = 2 * parent_idx + 1
             cr_idx = cl_idx + 1
-            if cl_idx >= len(self.tree):    # reach bottom
+            if cl_idx >= len(self.tree):  # reach bottom
                 leaf_idx = parent_idx
                 break
             else:
@@ -57,40 +56,39 @@ class SumTree(object):
                     parent_idx = cl_idx
                 else:
                     v -= self.tree[cl_idx]
-                    parent_idx = cr_idx    
+                    parent_idx = cr_idx
         data_idx = leaf_idx - self.capacity + 1
         return leaf_idx, self.tree[leaf_idx], self.data[data_idx]
-    
+
     @property
     def total_p(self):
         return self.tree[0]
 
 
 class Memeory(object):
-    
-    epsilon = 0.01      # small amount to avoid zero priority
-    alpha = 0.6         # [0,1] convert the important of TD error to priority
-    beta = 0.4          # importance-sampling from initial value increasing to 1
+    epsilon = 0.01  # small amount to avoid zero priority
+    alpha = 0.6  # [0,1] convert the important of TD error to priority
+    beta = 0.4  # importance-sampling from initial value increasing to 1
     beta_increment_per_sampling = 0.001
     abs_err_upper = 1.  # clipped abs error
-    
+
     def __init__(self, capacity):
         self.tree = SumTree(capacity)
-    
+
     def store(self, transition):
         max_p = np.max(self.tree.tree[-self.tree.capacity:])
         if max_p == 0:
             max_p = self.abs_err_upper
-        self.tree.add(max_p, transition)    # set the max p for new p
-    
+        self.tree.add(max_p, transition)  # set the max p for new p
+
     def sample(self, n):
         b_idx = np.empty((n,), dtype=np.int32)
         b_memory = np.empty((n, self.tree.data[0].size))
         ISWeights = np.empty((n, 1))
-        
-        pri_seg = self.tree.total_p / n     # priority segment
+
+        pri_seg = self.tree.total_p / n  # priority segment
         self.beta = np.min([1., self.beta + self.beta_increment_per_sampling])  # max = 1
-        
+
         min_prob = np.min(self.tree.tree[-self.tree.capacity:]) / self.tree.total_p
         for i in range(n):
             a, b = pri_seg * i, pri_seg * (i + 1)
@@ -100,7 +98,7 @@ class Memeory(object):
             ISWeights[i, 0] = np.power(prob / min_prob, -self.beta)
             b_idx[i], b_memory[i, :] = idx, data
         return b_idx, b_memory, ISWeights
-    
+
     def batch_update(self, tree_idx, abs_errors):
         abs_errors += self.epsilon
         clipped_errors = np.minimum(abs_errors, self.abs_err_upper)
@@ -136,9 +134,9 @@ class PrioritizedReplyDQN:
         self.batch_size = batch_size
         self.epsilon_increment = e_greedy_increment
         self.epsilon = 0 if e_greedy_increment is not None else self.epsilon_max
-        
+
         self.prioritized = prioritized
-        
+
         # total learning step
         self.learn_step_counter = 0
 
@@ -147,18 +145,18 @@ class PrioritizedReplyDQN:
         t_params = tf.get_collection('target_net_params')
         e_params = tf.get_collection('eval_net_params')
         self.replace_target_op = [tf.assign(t, e) for t, e in zip(t_params, e_params)]
-        
+
         if self.prioritized:
             self.memory = Memeory(capacity=memory_size)
         else:
             self.memory = np.zeros((self.memory_size, n_features * 2 + 2))
-        
+
         if sess is None:
             self.sess = tf.Session()
             self.sess.run(tf.global_variables_initializer())
         else:
             self.sess = sess
-        
+
         if output_graph:
             # $ tensorboard --logdir=logs
             # tf.train.SummaryWriter soon be deprecated, use following
@@ -200,7 +198,7 @@ class PrioritizedReplyDQN:
             self._train_op = tf.train.RMSPropOptimizer(self.lr).minimize(self.loss)
 
         # ------------------ build target_net ------------------
-        self.s_ = tf.placeholder(tf.float32, [None, self.n_features], name='s_')    # input
+        self.s_ = tf.placeholder(tf.float32, [None, self.n_features], name='s_')  # input
         with tf.variable_scope('target_net'):
             # c_names(collections_names) are the collections to store variables
             c_names = ['target_net_params', tf.GraphKeys.GLOBAL_VARIABLES]
@@ -224,13 +222,13 @@ class PrioritizedReplyDQN:
         else:
             if not hasattr(self, 'memory_counter'):
                 self.memory_counter = 0
-    
+
             transition = np.hstack((s, [a, r], s_))
-    
+
             # replace the old memory with new memory
             index = self.memory_counter % self.memory_size
             self.memory[index, :] = transition
-    
+
             self.memory_counter += 1
 
     def choose_action(self, observation):
@@ -281,9 +279,9 @@ class PrioritizedReplyDQN:
         if self.prioritized:
             _, abs_errors, self.cost = self.sess.run([self._train_op, self.abs_erros, self.loss],
                                                      feed_dict={
-                                                             self.s: batch_memory[:, :self.n_features],
-                                                             self.q_target: q_target,
-                                                             self.ISWeights: ISWeights})
+                                                         self.s: batch_memory[:, :self.n_features],
+                                                         self.q_target: q_target,
+                                                         self.ISWeights: ISWeights})
             self.memory.batch_update(tree_idx, abs_errors)
         else:
             _, self.cost = self.sess.run([self._train_op, self.loss],
