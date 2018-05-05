@@ -98,12 +98,13 @@ class CarEnv(object):
         self.state_dim = 7
         self.action_dim = 2
 
-        self.goal = {'x': 100, 'y': 100, 'r': 40}
-        self.car = {'x': 200, 'y': 200, 'r': 10}
+        self.goal = {'x': 200, 'y': 200, 'r': 40}
+        self.car = {'x': 100, 'y': 100, 'r': 10}
         self.on_goal = 1. if self._on_goal() else 0.
 
     def step(self, action):
         done = False
+        r = 0
         # print action
         action = np.clip(action, a_min=self.action_bound[0], a_max=self.action_bound[1])
         # print action
@@ -113,16 +114,19 @@ class CarEnv(object):
         if (0 < car_x < 400) and (0 < car_y < 400):
             self.car['x'] = car_x
             self.car['y'] = car_y
+        else:
+            r = -100
+            done = True
 
         dist = [(self.goal['x'] - self.car['x']) / 400,
                 (self.goal['y'] - self.car['y']) / 400]
-        r = -np.sqrt(dist[0] ** 2 + dist[1] ** 2)
+        r -= np.sqrt(dist[0] ** 2 + dist[1] ** 2)
 
         # done and reward
         if self._on_goal():
             r += 1.
             self.on_goal += 1
-            done = [True if self.on_goal > 100 else False]
+            done = [True if self.on_goal > 200 else False]
         else:
             self.on_goal *= 0
 
@@ -133,8 +137,8 @@ class CarEnv(object):
         return s, r, done
 
     def reset(self):
-        self.goal['x'] = np.random.rand() * 400.
-        self.goal['y'] = np.random.rand() * 400.
+        # self.goal['x'] = np.random.rand() * 400.
+        # self.goal['y'] = np.random.rand() * 400.
         self.car['x'] = np.random.rand()*400
         self.car['y'] = np.random.rand()*400
         # self.goal = {'x': 100, 'y': 100, 'r': 40}

@@ -12,7 +12,7 @@ BATCH_SIZE = 50
 
 
 class DDPG(object):
-    def __init__(self, a_dim, s_dim, a_bound, ):
+    def __init__(self, a_dim, s_dim, a_bound, output_graph=False):
         self.memory = np.zeros((MEMORY_CAPACITY, s_dim * 2 + a_dim + 1),
                                dtype=np.float32)
         self.pointer = 0
@@ -30,6 +30,11 @@ class DDPG(object):
         print "Building Graph..."
         self._build_graph()
         print "Graph Built"
+
+        if output_graph:
+            # $ tensorboard --logdir=logs
+            # tf.train.SummaryWriter soon be deprecated, use following
+            tf.summary.FileWriter("logs/", self.sess.graph)
 
     def choose_action(self, s):
         return self.sess.run(self.a, feed_dict={
@@ -97,8 +102,6 @@ class DDPG(object):
         self.a_train = tf.train.AdamOptimizer(LR_A).minimize(a_loss, var_list=self.ae_params)
 
         self.sess.run(tf.global_variables_initializer())
-
-        tf.summary.FileWriter("logs/", self.sess.graph)
 
     def actor(self, s, scope, trainable):
         with tf.variable_scope(scope):

@@ -5,8 +5,8 @@ from car_env import CarEnv
 from rl import DDPG
 
 # 设置全局变量
-MAX_EPISODES = 200
-MAX_EP_STEPS = 200
+MAX_EPISODES = 500
+MAX_EP_STEPS = 300
 ON_TRAIN = True
 
 
