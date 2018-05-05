@@ -1,12 +1,13 @@
 # coding=utf-8
 # 导入环境和学习方法
 from arm_env import ArmEnv
+from car_env import CarEnv
 from rl import DDPG
 
 # 设置全局变量
-MAX_EPISODES = 500
+MAX_EPISODES = 200
 MAX_EP_STEPS = 200
-ON_TRAIN = False
+ON_TRAIN = True
 
 
 def train():
@@ -15,7 +16,7 @@ def train():
         s = env.reset()
         ep_r = 0.
         for j in range(MAX_EP_STEPS):
-            if i >= 500:
+            if i >= 150:
                 env.render()
             a = rl.choose_action(s)
             s_, r, done = env.step(a)
@@ -40,13 +41,13 @@ def eval():
     while True:
         env.render()
         a = rl.choose_action(s)
-        print env.step(a)
+        env.step(a)
 
 
 if __name__ == '__main__':
 
     # 设置环境
-    env = ArmEnv()
+    env = CarEnv()
     s_dim = env.state_dim
     a_dim = env.action_dim
     a_bound = env.action_bound
