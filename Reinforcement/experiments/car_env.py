@@ -99,7 +99,7 @@ class CarEnv(object):
         self.action_dim = 2
 
         self.goal = {'x': 200, 'y': 200, 'r': 40}
-        self.car = {'x': 100, 'y': 100, 'r': 10}
+        self.car = {'x': 150, 'y': 150, 'r': 10}
         self.on_goal = 1. if self._on_goal() else 0.
 
     def step(self, action):
@@ -115,11 +115,11 @@ class CarEnv(object):
             self.car['x'] = car_x
             self.car['y'] = car_y
         else:
-            r = -100
+            r = -10
             done = True
 
-        dist = [(self.goal['x'] - self.car['x']) / 400,
-                (self.goal['y'] - self.car['y']) / 400]
+        dist = [(self.goal['x'] - self.car['x'])/40,
+                (self.goal['y'] - self.car['y'])/40]
         r -= np.sqrt(dist[0] ** 2 + dist[1] ** 2)
 
         # done and reward
@@ -139,8 +139,8 @@ class CarEnv(object):
     def reset(self):
         # self.goal['x'] = np.random.rand() * 400.
         # self.goal['y'] = np.random.rand() * 400.
-        self.car['x'] = np.random.rand()*400
-        self.car['y'] = np.random.rand()*400
+        self.car['x'] = np.random.rand() * 400
+        self.car['y'] = np.random.rand() * 400
         # self.goal = {'x': 100, 'y': 100, 'r': 40}
         # self.car = {'x': 150, 'y': 200, 'r': 10}
         self.on_goal = 1. if self._on_goal() else 0.

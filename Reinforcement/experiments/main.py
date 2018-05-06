@@ -16,7 +16,7 @@ def train():
         s = env.reset()
         ep_r = 0.
         for j in range(MAX_EP_STEPS):
-            if i >= 150:
+            if i >= 200:
                 env.render()
             a = rl.choose_action(s)
             s_, r, done = env.step(a)
@@ -25,6 +25,7 @@ def train():
             ep_r += r
             if rl.memory_full:
                 # start to learn once has fulfilled the memory
+                # print 'Learning...'
                 rl.learn()
 
             s = s_
@@ -47,7 +48,7 @@ def eval():
 if __name__ == '__main__':
 
     # 设置环境
-    env = CarEnv()
+    env = ArmEnv()
     s_dim = env.state_dim
     a_dim = env.action_dim
     a_bound = env.action_bound

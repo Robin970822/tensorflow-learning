@@ -113,7 +113,7 @@ class DDPG(object):
 
     def critic(self, s, a, scope, trainable):
         with tf.variable_scope(scope):
-            n_l1 = 100
+            n_l1 = 300
             w1_s = tf.get_variable('w1_s', [self.s_dim, n_l1], trainable=trainable)
             w1_a = tf.get_variable('w1_a', [self.a_dim, n_l1], trainable=trainable)
             b1 = tf.get_variable('b1', [1, n_l1], trainable=trainable)
